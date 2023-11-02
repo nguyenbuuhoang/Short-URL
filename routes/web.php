@@ -25,10 +25,9 @@ Route::get('/login', function () {
 Route::get('/register', function () {
     return view('auth.register');
 })->name('register');
-
+Route::view('/verify', 'auth.verify')->name('verify');
 Route::middleware(['auth:sanctum', 'role:admin|editor'])->prefix('admin')->group(function () {
     Route::get('/index', function () {
         return view('admin.index');
     })->name('admin.index');
 });
-

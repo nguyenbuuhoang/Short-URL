@@ -39,44 +39,72 @@
         </div>
     </section>
     <script>
-        $(document).ready(function() {
-            $('#login-form').submit(function(event) {
-                event.preventDefault();
+        const loginForm = document.getElementById('login-form');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const messageElement = document.getElementById('message');
 
-                const email = $('#email').val();
-                const password = $('#password').val();
-                const csrfToken = $('meta[name="csrf-token"]').attr('content');
+        loginForm.addEventListener('submit', handleLogin);
 
-                const requestData = {
-                    email: email,
-                    password: password
-                };
+        function handleLogin(event) {
+            event.preventDefault();
 
-                $.ajax({
-                    url: '/api/login',
+            const email = emailInput.value;
+            const password = passwordInput.value;
+
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            fetch('/api/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': csrfToken
                     },
-                    data: JSON.stringify(requestData),
-                    success: function(response) {
-                        if (response.token) {
-                            const expiryDate = new Date();
-                            expiryDate.setDate(expiryDate.getDate() + 1);
-                            document.cookie = "token=" + response.token + "; expires=" +
-                                expiryDate.toUTCString() + "; path=/";
-                            alert('Đăng nhập thành công');
-                            window.location.href = '/';
-                        }
-                    },
-                    error: function(xhr, textStatus, errorThrown) {
-                        $('#message').text('Sai tên đăng nhập hoặc mật khẩu');
-                    }
-                });
-            });
-        });
-    </script>
+                    body: JSON.stringify({
+                        email,
+                        password
+                    }),
+                })
+                .then(response => response.json())
+                .then(handleResponse)
+                .catch(handleError);
+        }
 
+        function handleResponse(data) {
+            if (data.success) {
+                setCookie('token', data.token, 1);
+                alert(data.success);
+                if (data.role.includes('admin') || data.role.includes('editor')) {
+                    window.location.href = '/admin/index';
+                } else {
+                    window.location.href = '/';
+                }
+            }
+            if (data.message === 'Tài khoản chưa được xác minh, vui lòng vào Email để xác minh') {
+                const confirmation = confirm(data.message + ' Bấm OK để xác minh tài khoản.');
+
+                if (confirmation) {
+                    window.location.href = '/verify?id=' + data.id;
+                }
+            } else {
+                showMessage(data.message);
+            }
+        }
+
+
+        function handleError(error) {
+            console.error('Error:', error);
+        }
+
+        function showMessage(message) {
+            messageElement.textContent = message;
+        }
+        // Hàm để lưu cookie
+        function setCookie(name, value, days) {
+            const expires = new Date();
+            expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+            document.cookie = name + '=' + value + ';expires=' + expires.toUTCString() + ';path=/';
+        }
+    </script>
 
 @endsection

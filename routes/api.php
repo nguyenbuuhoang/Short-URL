@@ -17,6 +17,9 @@ use App\Http\Controllers\Admin\MakeRoleController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+//verify link
+Route::post('/verify/{id}', [AuthController::class, 'verify']);
+Route::post('/resend-verification/{id}', [AuthController::class, 'resendVerificationEmail']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('user', [AuthController::class, 'user']);
