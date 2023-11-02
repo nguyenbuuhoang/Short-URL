@@ -2,7 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\User\ShortUrlController;
 use App\Http\Controllers\Admin\MakeRoleController;
+use App\Http\Controllers\Guest\ShortUrlGuestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,13 +19,22 @@ use App\Http\Controllers\Admin\MakeRoleController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+
 //verify link
 Route::post('/verify/{id}', [AuthController::class, 'verify']);
 Route::post('/resend-verification/{id}', [AuthController::class, 'resendVerificationEmail']);
 
+//create short for guest
+Route::post('guest/create-short-url', [ShortUrlGuestController::class, 'createShortURL'])->middleware('guest');
+
+//middleware sanctum
 Route::middleware('auth:sanctum')->group(function () {
+    //Get User
     Route::get('user', [AuthController::class, 'user']);
+    //Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    //Create short for User
+    Route::post('user/create-short-url', [ShortUrlController::class, 'createShortURL']);
 });
 
 

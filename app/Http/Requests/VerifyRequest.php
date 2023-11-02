@@ -2,11 +2,10 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
-class VerifyRequest extends FormRequest
+use App\Http\Requests\BaseRequest;
+
+class VerifyRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,11 +25,5 @@ class VerifyRequest extends FormRequest
         return [
             'verification_code' => 'required'
         ];
-    }
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'errors' => $validator->errors(),
-        ], 400));
     }
 }

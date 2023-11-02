@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\User\ShortUrlController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,21 +14,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('user.home');
+Route::middleware(['guest'])->group(function () {
+    Route::view('/', 'user.home')->name('home');
 });
-Route::get('/home', function () {
-    return view('user.home');
-})->name('home');
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register');
+Route::view('/login', 'auth.login')->name('login');
+Route::view('/register', 'auth.register')->name('register');
 Route::view('/verify', 'auth.verify')->name('verify');
-Route::middleware(['auth:sanctum', 'role:admin|editor'])->prefix('admin')->group(function () {
-    Route::get('/index', function () {
-        return view('admin.index');
-    })->name('admin.index');
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::view('/links', 'user.links')->name('links');
 });
+
+Route::middleware(['auth:sanctum', 'role:admin|editor'])->prefix('admin')->group(function () {
+    Route::view('/index', 'admin.index')->name('admin.index');
+});
+
+Route::get('/{shortCode}', [ShortUrlController::class, 'redirectToURL'])->name('shortcode');

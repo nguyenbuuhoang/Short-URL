@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\BaseRequest;
 
-class RegisterRequest extends BaseRequest
+class CreateShortURL extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,15 +22,14 @@ class RegisterRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
-            'email' => 'required|string|email|unique:users',
-            'password' => 'required|string|min:6',
+            'url' => 'required|url'
         ];
     }
-
-    /**
-     * Get the validation messages that apply to the request.
-     *
-     * @return array<string, string>
-     */
+    public function messages(): array
+    {
+        return [
+            'url.url' => 'Vui lòng nhập đường dẫn chính xác',
+            'url.required' => 'Url không được bỏ trống',
+        ];
+    }
 }
