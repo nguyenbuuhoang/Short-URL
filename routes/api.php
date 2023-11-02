@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Admin\MakeRoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,3 +22,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
+
+
+//create role and permission
+Route::get('addrole', [MakeRoleController::class, 'addRole']);
+Route::get('addpermission/user', [MakeRoleController::class, 'addPermissionUser']);
+Route::get('addpermission/link', [MakeRoleController::class, 'addPermissionLink']);
+Route::get('role/permission/user', [MakeRoleController::class, 'roleAsPermissionUser']);
+Route::get('role/permission/link', [MakeRoleController::class, 'roleAsPermissionLink']);

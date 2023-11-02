@@ -25,9 +25,8 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
             'verification_code' => $verificationCode = mt_rand(100000, 999999),
             'code_expired_in' => now()->addSeconds(300),
-
         ]);
-
+        $user->assignRole('user');
         //dispatch(new SendVerificationEmail($user, $verificationCode));
 
         return response()->json([
@@ -47,7 +46,7 @@ class AuthController extends Controller
         }
 
         $user = $request->user();
-
+        $roles = $user->getRoleNames();
         /*     if (!$user->is_verified) {
             Auth::logout();
             return response()->json([
@@ -61,6 +60,7 @@ class AuthController extends Controller
             'message' => 'Đăng nhập thành công',
             'user' => $user,
             'token' => $token,
+            'role' => $roles,
         ], 200);
     }
 
