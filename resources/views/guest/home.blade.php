@@ -1,4 +1,4 @@
-@extends('user.layouts.app')
+@extends('guest.layouts.app')
 @section('title', 'Short Link')
 @section('content')
     <div class="container">

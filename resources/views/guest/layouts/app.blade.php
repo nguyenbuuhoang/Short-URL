@@ -123,7 +123,6 @@
     } else {
         $("#login-link").show();
         $("#register-link").show();
-        window.location.href = '/login';
     }
 </script>
 
