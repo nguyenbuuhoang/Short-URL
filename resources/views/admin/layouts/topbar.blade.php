@@ -54,7 +54,7 @@
                 },
                 success: function() {
                     deleteCookie('token');
-                    location.reload();
+                    window.location.href = '/';
                 }
             });
         });
