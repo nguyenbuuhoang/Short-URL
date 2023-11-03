@@ -4,6 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\User\ShortUrlController;
 use App\Http\Controllers\Admin\MakeRoleController;
+use App\Http\Controllers\Admin\UserListController;
+use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\ShortLinksController;
 use App\Http\Controllers\Guest\ShortUrlGuestController;
 
 /*
@@ -33,10 +36,32 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('user', [AuthController::class, 'user']);
     //Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    //Create short for User
+    //Get short for user
+    Route::get('/user-short-urls', [ShortURLController::class, 'getUserShortUrls']);
+    Route::get('/short-urls/{user_id}', [ShortURLController::class, 'getShortURLsByUserId']);
+    Route::get('short-urls/{user_id}/totals', [ShortURLController::class, 'getTotalsByUserId']);
+    //CRUD short for User
     Route::post('user/create-short-url', [ShortUrlController::class, 'createShortURL']);
+    Route::put('/short-urls/{id}', [ShortURLController::class, 'updateShortCode']);
+    Route::delete('/short-urls/{id}', [ShortURLController::class, 'deleteShortURL']);
 });
 
+//Admin ListUser
+Route::get('/users-list', [UserListController::class, 'getListUser']);
+Route::put('/users/{id}', [UserListController::class, 'updateUser']);
+Route::delete('/users/{id}', [UserListController::class, 'deleteUser']);
+//Route::delete('delete-selected-users', [UserListController::class, 'deleteSelectedUsers']);
+Route::get('/totals', [ShortLinksController::class, 'getTotal']);
+//Admin ShortURL
+Route::get('/shortURL', [ShortLinksController::class, 'getShortURL']);
+Route::put('/shortURL/{id}', [ShortLinksController::class, 'updateShortURL']);
+Route::delete('/shortURL/{id}', [ShortLinksController::class, 'deleteShortURL']);
+Route::get('/shortURL/qrcode/{id}', [ShortLinksController::class, 'getQRCode']);
+//Admin Permission
+Route::get('/roles', [PermissionController::class, 'getRoles']);
+Route::get('/permissions', [PermissionController::class, 'getPermissions']);
+Route::post('/assign_permission', [PermissionController::class, 'assignPermission']);
+Route::post('/revoke_permission', [PermissionController::class, 'revokePermission']);
 
 //create role and permission
 Route::get('addrole', [MakeRoleController::class, 'addRole']);

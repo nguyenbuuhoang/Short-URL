@@ -13,12 +13,12 @@
             </a>
         </li>
         <li>
-            <a href="#">
+            <a href={{route('admin.user-list')}}>
                 <i class="zmdi zmdi-link"></i> <span>Quản lý User | Role</span>
             </a>
         </li>
         <li>
-            <a href="#">
+            <a href={{route('admin.permission')}}>
                 <i class="zmdi zmdi-shield-security"></i> <span>Phân quyền Role</span>
             </a>
         </li>

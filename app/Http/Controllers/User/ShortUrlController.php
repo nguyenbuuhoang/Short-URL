@@ -4,8 +4,11 @@ namespace App\Http\Controllers\User;
 
 use App\Models\ShortUrl;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Exports\ShortUrlsExport;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\CreateShortURL;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -53,5 +56,76 @@ class ShortUrlController extends Controller
 
         $shortUrl->increment('clicks');
         return redirect($shortUrl->url);
+    }
+    public function getShortURLsByUserId(Request $request, $userId, $perPage = 4)
+    {
+        $query = ShortUrl::where('user_id', $userId);
+
+        $shortLink = $request->input('url');
+        if (!empty($shortLink)) {
+            $query->where('url', 'like', '%' . $shortLink . '%');
+        }
+        $sort_by = $request->input('sort_by', 'id');
+        $sort_order = $request->input('sort_order', 'asc');
+        $query->orderBy($sort_by, $sort_order);
+
+        if ($request->has('export') && $request->input('export') === 'csv') {
+            $shortUrls = $query->get();
+            return Excel::download(new ShortUrlsExport($shortUrls), 'data_short_urls.csv');
+        }
+
+        $shortUrls = $query->paginate($perPage);
+        return response()->json([
+            'shortUrls' => $shortUrls,
+        ], 200);
+    }
+    public function getTotalsByUserId($userId)
+    {
+        $totals = ShortUrl::where('user_id', $userId)
+            ->selectRaw('COUNT(*) as totalShortLinks, SUM(clicks) as totalClicks')
+            ->first();
+
+        return response()->json([
+            'totalShortLinks' => $totals->totalShortLinks,
+            'totalClicks' => $totals->totalClicks,
+        ], 200);
+    }
+    public function updateShortCode(Request $request, $id)
+    {
+        $shortUrl = ShortUrl::findOrFail($id);
+
+        if (!Auth::check() || $shortUrl->user_id !== Auth::user()->id) {
+            return response()->json(['error' => 'Không có quyền chỉnh sửa'], 403);
+        }
+
+        $shortCode = $request->input('short_code');
+        $status = $request->input('status');
+
+        $shortUrl->update([
+            'short_code' => $shortCode,
+            'short_url_link' => str_replace(['http://', 'https://'], '', url($shortCode)),
+            'status' => $status,
+        ]);
+
+        return response()->json(
+            $shortUrl->only([
+                'url',
+                'short_url_link',
+                'status',
+            ])
+        );
+    }
+
+    public function deleteShortURL($id)
+    {
+        $shortUrl = ShortUrl::find($id);
+        if (!$shortUrl) {
+            return response()->json(['error' => 'URL không tìm thấy'], 404);
+        }
+        if (!Auth::check() || $shortUrl->user_id !== Auth::user()->id) {
+            return response()->json(['error' => 'Không có quyền chỉnh sửa'], 403);
+        }
+        $shortUrl->delete();
+        return response()->json(['message' => 'URL đã được xóa thành công']);
     }
 }

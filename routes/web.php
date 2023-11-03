@@ -25,8 +25,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::view('/links', 'user.links')->name('links');
 });
 
-Route::middleware(['auth:sanctum', 'role:admin|editor'])->prefix('admin')->group(function () {
+Route::middleware(['role:admin|editor'])->prefix('admin')->group(function () {
     Route::view('/index', 'admin.index')->name('admin.index');
+    Route::view('/user-list', 'admin.user-list')->name('admin.user-list');
+    Route::view('/permission', 'admin.permission')->name('admin.permission');
 });
 
 Route::get('/{shortCode}', [ShortUrlController::class, 'redirectToURL'])->name('shortcode');
