@@ -44,24 +44,22 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('user/create-short-url', [ShortUrlController::class, 'createShortURL']);
     Route::put('/short-urls/{id}', [ShortURLController::class, 'updateShortCode']);
     Route::delete('/short-urls/{id}', [ShortURLController::class, 'deleteShortURL']);
+    //Admin ListUser
+    Route::get('/users-list', [UserListController::class, 'getListUser']);
+    Route::put('/users/{id}', [UserListController::class, 'updateUser']);
+    Route::delete('/users/{id}', [UserListController::class, 'deleteUser']);
+    Route::get('/totals', [ShortLinksController::class, 'getTotal']);
+    //Admin ShortURL
+    Route::get('/shortURL', [ShortLinksController::class, 'getShortURL']);
+    Route::put('/shortURL/{id}', [ShortLinksController::class, 'updateShortURL']);
+    Route::delete('/shortURL/{id}', [ShortLinksController::class, 'deleteShortURL']);
+    Route::get('/shortURL/qrcode/{id}', [ShortLinksController::class, 'getQRCode']);
+    //Admin Permission
+    Route::get('/roles', [PermissionController::class, 'getRoles']);
+    Route::get('/permissions', [PermissionController::class, 'getPermissions']);
+    Route::post('/assign_permission', [PermissionController::class, 'assignPermission']);
+    Route::post('/revoke_permission', [PermissionController::class, 'revokePermission']);
 });
-
-//Admin ListUser
-Route::get('/users-list', [UserListController::class, 'getListUser']);
-Route::put('/users/{id}', [UserListController::class, 'updateUser']);
-Route::delete('/users/{id}', [UserListController::class, 'deleteUser']);
-//Route::delete('delete-selected-users', [UserListController::class, 'deleteSelectedUsers']);
-Route::get('/totals', [ShortLinksController::class, 'getTotal']);
-//Admin ShortURL
-Route::get('/shortURL', [ShortLinksController::class, 'getShortURL']);
-Route::put('/shortURL/{id}', [ShortLinksController::class, 'updateShortURL']);
-Route::delete('/shortURL/{id}', [ShortLinksController::class, 'deleteShortURL']);
-Route::get('/shortURL/qrcode/{id}', [ShortLinksController::class, 'getQRCode']);
-//Admin Permission
-Route::get('/roles', [PermissionController::class, 'getRoles']);
-Route::get('/permissions', [PermissionController::class, 'getPermissions']);
-Route::post('/assign_permission', [PermissionController::class, 'assignPermission']);
-Route::post('/revoke_permission', [PermissionController::class, 'revokePermission']);
 
 //create role and permission
 Route::get('addrole', [MakeRoleController::class, 'addRole']);

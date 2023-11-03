@@ -48,20 +48,4 @@ class UserListController extends Controller
         $user->delete();
         return response()->json(['message' => 'Người dùng đã bị xóa thành công'], 200);
     }
-
-    /*     public function deleteSelectedUsers(Request $request)
-    {
-        $userIds = $request->input('user_ids', []);
-
-        if (empty($userIds)) {
-            return response()->json(['message' => 'Không có người dùng nào được chọn'], 400);
-        }
-
-        try {
-            User::whereIn('id', $userIds)->delete();
-            return response()->json(['message' => 'Đã xóa thành công người dùng đã chọn'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Lỗi xóa người dùng'], 500);
-        }
-    } */
 }
