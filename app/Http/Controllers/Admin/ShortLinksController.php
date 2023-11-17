@@ -44,17 +44,16 @@ class ShortLinksController extends Controller
             ->select('short_urls.id', 'url', 'short_url_link', 'short_code', 'clicks', 'status', 'expired_at', 'short_urls.created_at', 'user_id');
 
         if ($url) {
-            $query= $this->dataProcessorService->filterByUrl($query, $url);
+            $query = $this->dataProcessorService->filterByUrl($query, $url);
         }
 
         if ($name) {
-            $query->join('users', 'short_urls.user_id', '=', 'users.id')
-                ->where('users.name', 'like', '%' . $name . '%');
+            $query = $this->dataProcessorService->joinUsersTable($query)
+                ->filterByUserName($query, $name);
         }
 
         if ($sort_by === 'name') {
-            $query->join('users', 'short_urls.user_id', '=', 'users.id');
-
+            $query = $this->dataProcessorService->joinUsersTable($query);
         } else {
             $query = $this->dataProcessorService->sort($query, $sort_by, $sort_order);
         }

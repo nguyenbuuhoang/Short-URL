@@ -4,6 +4,14 @@ namespace App\Services;
 
 class DataProcessorService
 {
+    public function joinUsersTable($query)
+    {
+        return $query->join('users', 'short_urls.user_id', '=', 'users.id');
+    }
+    public function filterByUserName($query, $name)
+    {
+        return $query->where('users.name', 'like', '%' . $name . '%');
+    }
     public function filterByUrl($query, $url)
     {
         return $query->where('url', 'like', '%' . $url . '%');

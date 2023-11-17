@@ -36,7 +36,7 @@
     <header class="custom-bg text-white py-2">
         <div class="container-fluid ">
             <nav class="navbar navbar-expand-lg navbar-dark ml-5">
-                <a class="navbar-brand custom-brand" href="{{ route('home') }}">Project Mini</a>
+                <a class="navbar-brand custom-brand" href="{{ route('home') }}">Short Link</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -65,7 +65,7 @@
 
     <footer class="custom-bg text-white py-3 text-center">
         <div class="container">
-            <p class="mb-0">Copyright &copy; 2023 Mini Project</p>
+            <p class="mb-0">Copyright &copy; 2023 Short Link</p>
         </div>
     </footer>
 </body>
