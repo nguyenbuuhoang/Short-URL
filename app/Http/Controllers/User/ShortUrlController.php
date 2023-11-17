@@ -2,50 +2,43 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Models\ShortUrl;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Exports\ShortUrlsExport;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\CreateShortURL;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Services\DataProcessorService;
+use App\Services\User\ShortUrlService;
 
 class ShortUrlController extends Controller
 {
+    protected $shortUrlService;
+    protected $dataProcessorService;
+
+    public function __construct(ShortUrlService $shortUrlService, DataProcessorService $dataProcessorService)
+    {
+        $this->shortUrlService = $shortUrlService;
+        $this->dataProcessorService = $dataProcessorService;
+    }
+
     public function createShortURL(CreateShortURL $request)
     {
-        $user = Auth::user();
-        $userId = $user->id;
-        $shortCode = Str::random(4);
-        $shortUrlLink = url($shortCode);
-        $qrCode = QrCode::size(200)->generate($shortUrlLink);
-        $expiredAt = now()->addDays(5);
         $url = $request->input('url');
-        $shortUrl = ShortUrl::create([
-            'url' => $url,
-            'short_code' => $shortCode,
-            'short_url_link' => $shortUrlLink,
-            'expired_at' => $expiredAt,
-            'user_id' => $userId,
-            'qrcode' => $qrCode,
-        ]);
+        $shortUrl = $this->shortUrlService->createShort($url);
+
         return response()->json([
+            'user_id' => $shortUrl->user_id,
             'url' => $shortUrl->url,
             'short_url_link' => $shortUrl->short_url_link,
-            'clicks' => $shortUrl->clicks,
-            'status' => $shortUrl->status,
             'created_at' => $shortUrl->created_at,
             'expired_at' => $shortUrl->expired_at,
-            'qrcode' => $qrCode,
-            'user_id' => $userId,
+            'qrcode' => $shortUrl->qrcode,
         ]);
     }
 
     public function redirectToURL($shortCode)
     {
-        $shortUrl = ShortUrl::where('short_code', $shortCode)->first();
+        $shortUrl = $this->shortUrlService->getByShortCode($shortCode);
 
         if (!$shortUrl) {
             return response()->json(['error' => 'Short URL không tìm thấy'], 404);
@@ -57,72 +50,55 @@ class ShortUrlController extends Controller
         $shortUrl->increment('clicks');
         return redirect($shortUrl->url);
     }
-    public function getShortURLsByUserId(Request $request, $userId, $perPage = 4)
+    public function getShortURLsByUserId(Request $request, $userId)
     {
-        $query = ShortUrl::where('user_id', $userId);
-
-        $shortLink = $request->input('url');
-        if (!empty($shortLink)) {
-            $query->where('url', 'like', '%' . $shortLink . '%');
-        }
+        $perPage = $request->input('perPage', 4);
+        $url = $request->input('url');
         $sort_by = $request->input('sort_by', 'id');
         $sort_order = $request->input('sort_order', 'asc');
-        $query->orderBy($sort_by, $sort_order);
+        $export = $request->input('export');
 
-        if ($request->has('export') && $request->input('export') === 'csv') {
-            $shortUrls = $query->get();
-            return Excel::download(new ShortUrlsExport($shortUrls), 'data_short_urls.csv');
+        $query = $this->shortUrlService->getByShortUserId($userId);
+        if ($url) {
+            $this->dataProcessorService->filterByUrl($query, $url);
         }
-
-        $shortUrls = $query->paginate($perPage);
+        $query = $this->dataProcessorService->sort($query, $sort_by, $sort_order);
+        if ($export === 'csv') {
+            return Excel::download(new ShortUrlsExport($query->get()), 'data_short_urls.csv');
+        }
+        $shortUrls = $this->dataProcessorService->paginate($query, $perPage);
         return response()->json([
             'shortUrls' => $shortUrls,
         ], 200);
     }
     public function getTotalsByUserId($userId)
     {
-        $totals = ShortUrl::where('user_id', $userId)
-            ->selectRaw('COUNT(*) as totalShortLinks, SUM(clicks) as totalClicks')
-            ->first();
-
-        return response()->json([
-            'totalShortLinks' => $totals->totalShortLinks,
-            'totalClicks' => $totals->totalClicks,
-        ], 200);
+        $totals = $this->shortUrlService->getTotalsByUserId($userId);
+        return response()->json($totals, 200);
     }
     public function updateShortCode(Request $request, $id)
     {
-        $shortUrl = ShortUrl::findOrFail($id);
+        $shortUrl = $this->shortUrlService->findShortUrl($id);
 
-        if (!Auth::check() || $shortUrl->user_id !== Auth::user()->id) {
+        if (!$this->shortUrlService->hasPermission($shortUrl)) {
             return response()->json(['error' => 'Không có quyền chỉnh sửa'], 403);
         }
 
         $shortCode = $request->input('short_code');
         $status = $request->input('status');
 
-        $shortUrl->update([
-            'short_code' => $shortCode,
-            'short_url_link' => str_replace(['http://', 'https://'], '', url($shortCode)),
-            'status' => $status,
-        ]);
+        $result = $this->shortUrlService->updateShortUrl($shortUrl, $shortCode, $status);
 
-        return response()->json(
-            $shortUrl->only([
-                'url',
-                'short_url_link',
-                'status',
-            ])
-        );
+        return response()->json($result);
     }
 
     public function deleteShortURL($id)
     {
-        $shortUrl = ShortUrl::find($id);
+        $shortUrl = $this->shortUrlService->findShortUrl($id);
         if (!$shortUrl) {
             return response()->json(['error' => 'URL không tìm thấy'], 404);
         }
-        if (!Auth::check() || $shortUrl->user_id !== Auth::user()->id) {
+        if (!$this->shortUrlService->hasPermission($shortUrl)) {
             return response()->json(['error' => 'Không có quyền chỉnh sửa'], 403);
         }
         $shortUrl->delete();

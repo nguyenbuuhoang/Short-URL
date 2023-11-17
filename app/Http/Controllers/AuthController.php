@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Services\AuthServices;
 use App\Jobs\SendVerificationEmail;
 use App\Http\Requests\VerifyRequest;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +13,12 @@ use App\Http\Requests\RegisterRequest;
 
 class AuthController extends Controller
 {
+    protected $authService;
+
+    public function __construct(AuthServices $authService)
+    {
+        $this->authService = $authService;
+    }
     public function user()
     {
         return Auth::user();
@@ -27,7 +33,7 @@ class AuthController extends Controller
             'code_expired_in' => now()->addSeconds(300),
         ]);
         $user->assignRole('user');
-        //dispatch(new SendVerificationEmail($user, $verificationCode));
+        dispatch(new SendVerificationEmail($user, $verificationCode));
 
         return response()->json([
             'message' => 'Đăng ký thành công',
@@ -46,7 +52,6 @@ class AuthController extends Controller
         }
 
         $user = $request->user();
-        $roles = $user->getRoleNames();
         if (!$user->is_verified) {
             Auth::logout();
             return response()->json([
@@ -60,7 +65,7 @@ class AuthController extends Controller
             'success' => 'Đăng nhập thành công',
             'user' => $user,
             'token' => $token,
-            'role' => $roles,
+            'role' => $user->getRoleNames(),
         ], 200);
     }
     public function verify(VerifyRequest $request, $id)

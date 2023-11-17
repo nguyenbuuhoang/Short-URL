@@ -8,9 +8,19 @@ use Illuminate\Http\Request;
 use App\Exports\ShortLinksExport;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Services\DataProcessorService;
+use App\Services\User\ShortUrlService;
 
 class ShortLinksController extends Controller
 {
+    protected $shortUrlService;
+    protected $dataProcessorService;
+
+    public function __construct(ShortUrlService $shortUrlService, DataProcessorService $dataProcessorService)
+    {
+        $this->shortUrlService = $shortUrlService;
+        $this->dataProcessorService = $dataProcessorService;
+    }
     public function getTotal()
     {
         $totals = [
@@ -29,41 +39,44 @@ class ShortLinksController extends Controller
         $sort_order = $request->input('sort_order', 'asc');
         $name = $request->input('name');
         $url = $request->input('url');
+        $export = $request->input('export');
         $query = ShortUrl::with('user:id,name')
             ->select('short_urls.id', 'url', 'short_url_link', 'short_code', 'clicks', 'status', 'expired_at', 'short_urls.created_at', 'user_id');
 
-        if ($name) {
-            $query->whereHas('user', function ($query) use ($name) {
-                $query->where('name', 'like', '%' . $name . '%');
-            });
-        }
         if ($url) {
-            $query->where('url', 'like', '%' . $url . '%');
+            $query= $this->dataProcessorService->filterByUrl($query, $url);
+        }
+
+        if ($name) {
+            $query->join('users', 'short_urls.user_id', '=', 'users.id')
+                ->where('users.name', 'like', '%' . $name . '%');
         }
 
         if ($sort_by === 'name') {
-            $query->join('users', 'short_urls.user_id', '=', 'users.id')
-                ->orderBy('users.name', $sort_order);
+            $query->join('users', 'short_urls.user_id', '=', 'users.id');
+
         } else {
-            $query->orderBy($sort_by, $sort_order);
+            $query = $this->dataProcessorService->sort($query, $sort_by, $sort_order);
         }
-        if ($request->has('export') && $request->input('export') === 'csv') {
-            $shortLinks = $query->get();
-            return Excel::download(new ShortLinksExport($shortLinks), 'data_shorts.csv');
+
+        if ($export === 'csv') {
+            return Excel::download(new ShortLinksExport($query->get()), 'data_shorts.csv');
         }
-        $shortUrls = $query->paginate($perPage);
+
+        $shortUrls = $this->dataProcessorService->paginate($query, $perPage);
 
         return response()->json($shortUrls);
     }
+
     public function getQRCode($id)
     {
-        $shortUrl = ShortUrl::findOrFail($id);
+        $shortUrl = $this->shortUrlService->findShortUrl($id);
         $qrcode = $shortUrl->qrcode;
         return response()->json(['qrcode' => $qrcode]);
     }
     public function updateShortURL(Request $request, $id)
     {
-        $shortUrl = ShortUrl::findOrFail($id);
+        $shortUrl = $this->shortUrlService->findShortUrl($id);
         $shortCode = $request->input('short_code');
         $status = $request->input('status');
         $shortUrl->update([
@@ -77,7 +90,7 @@ class ShortLinksController extends Controller
 
     public function deleteShortURL($id)
     {
-        $shortUrl = ShortUrl::findOrFail($id);
+        $shortUrl = $this->shortUrlService->findShortUrl($id);
         $shortUrl->delete();
         return response()->json(['message' => 'Đã xóa short Url thành công'], 200);
     }

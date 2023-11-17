@@ -2,27 +2,23 @@
 
 namespace App\Http\Controllers\Guest;
 
-
-use App\Models\ShortUrl;
-use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateShortURL;
+use App\Services\User\ShortUrlService;
 
 class ShortUrlGuestController extends Controller
 {
+    protected $shortUrlService;
+
+    public function __construct(ShortUrlService $shortUrlService)
+    {
+        $this->shortUrlService = $shortUrlService;
+    }
+
     public function createShortURL(CreateShortURL $request)
     {
-        $shortCode = Str::random(4);
-        $shortUrlLink = str_replace(['http://', 'https://'], '', url($shortCode));
-        $expiredAt = now()->addMinutes(30);
         $url = $request->input('url');
-
-        $shortUrl = ShortUrl::create([
-            'url' => $url,
-            'short_code' => $shortCode,
-            'short_url_link' => $shortUrlLink,
-            'expired_at' => $expiredAt,
-        ]);
+        $shortUrl = $this->shortUrlService->createShort($url);
 
         return response()->json([
             'url' => $shortUrl->url,
