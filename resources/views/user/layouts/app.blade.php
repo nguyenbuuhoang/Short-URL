@@ -47,10 +47,10 @@
                             <a class="nav-link" href="{{ route('home') }}">Short URL</a>
                         </li>
                         <li class="nav-item" id="login-link">
-                            <a class="nav-link" href="{{ route('login') }}">Đăng nhập</a>
+                            <a class="nav-link" href="{{ route('login') }}">Login</a>
                         </li>
                         <li class="nav-item" id="register-link">
-                            <a class="nav-link" href="{{ route('register') }}">Đăng ký</a>
+                            <a class="nav-link" href="{{ route('register') }}">Register</a>
                         </li>
                         <div id="user-info" style="display: none;">
                         </div>
@@ -65,7 +65,7 @@
 
     <footer class="custom-bg text-white py-3 text-center">
         <div class="container">
-            <p class="mb-0">Copyright &copy; 2023 Short Link</p>
+            <p class="mb-0">Copyright &copy; 2024 Short Link</p>
         </div>
     </footer>
 </body>
@@ -92,10 +92,10 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Chào ${username}
+                        Hi ${username}
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" id="logout">Đăng xuất</a>
+                        <a class="dropdown-item" id="logout">Logout</a>
                     </div>
                 </li>
             `;

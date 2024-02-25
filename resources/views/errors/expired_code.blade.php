@@ -2,11 +2,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Mã hết hạn</title>
+    <title>Expired code</title>
 </head>
 <body>
     <script>
-        alert('Mã đã hết hạn');
+        alert('Code has expired');
         window.location.href = '/';
     </script>
 </body>

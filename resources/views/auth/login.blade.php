@@ -80,8 +80,8 @@
                     window.location.href = '/';
                 }
             }
-            if (data.message === 'Tài khoản chưa được xác minh, vui lòng vào Email để xác minh') {
-                const confirmation = confirm(data.message + ' Bấm OK để xác minh tài khoản.');
+            if (data.message === 'Account has not been verified, please go to Email to verify') {
+                const confirmation = confirm(data.message + ' Click OK to verify the account.');
 
                 if (confirmation) {
                     window.location.href = '/verify?id=' + data.id;

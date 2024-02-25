@@ -1,75 +1,74 @@
 @extends('admin.layouts.app')
 
 @section('content')
-    <div class="content-wrapper">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12 col-lg-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="row">
-                                <div class="col-md-6 my-auto">Danh sách user</div>
-                                <div class="col-md-6 text-right">
-                                    <button id="exportCSV" class="btn btn-success">Export to CSV</button>
-                                </div>
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-6 my-auto">User List</div>
+                            <div class="col-md-6 text-right">
+                                <button id="exportCSV" class="btn btn-success">Export to CSV</button>
                             </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-4 mb-2">
-                                    <label for="nameFilter">Tìm theo Tên:</label>
-                                    <input type="text" id="nameFilter" class="form-control">
-                                </div>
-                                <div class="col-md-3 mb-2">
-                                    <label for="sortBy">Sắp xếp theo:</label>
-                                    <select id="sortBy" class="form-control">
-                                        <option value="id">ID</option>
-                                        <option value="name">Tên User</option>
-                                        <option value="roles">Quyền</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3 mb-2">
-                                    <label for="sortOrder">Thứ tự:</label>
-                                    <select id="sortOrder" class="form-control">
-                                        <option value="asc">Tăng dần</option>
-                                        <option value="desc">Giảm dần</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-1 mb-2">
-                                    <div class="form-group">
-                                        <button type="button" id="filter-button"
-                                            class="btn btn-primary btn-block">Lọc</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table align-items-center table-flush table-borderless">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Tên User</th>
-                                        <th>Email</th>
-                                        <th>Quyền</th>
-                                        <th>Tổng URL</th>
-                                        <th>Ngày đăng ký</th>
-                                        <th>Trạng thái</th>
-                                        <th>Hành Động</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
                         </div>
                     </div>
-                    <div class="pagination" id="pagination">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-2">
+                                <label for="nameFilter">Filter by Name:</label>
+                                <input type="text" id="nameFilter" class="form-control">
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <label for="sortBy">Sort by:</label>
+                                <select id="sortBy" class="form-control">
+                                    <option value="id">ID</option>
+                                    <option value="name">User Name</option>
+                                    <option value="roles">Role</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <label for="sortOrder">Order:</label>
+                                <select id="sortOrder" class="form-control">
+                                    <option value="asc">Ascending</option>
+                                    <option value="desc">Descending</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-1 mb-2">
+                                <div class="form-group">
+                                    <button type="button" id="filter-button" class="btn btn-primary btn-block" style="width: 100px">Filter</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table align-items-center table-flush table-borderless">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>User Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Total URLs</th>
+                                    <th>Registration Date</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
+                <div class="pagination" id="pagination"></div>
             </div>
         </div>
     </div>
+</div>
+
     @include('model.admin.user_list.editRoleModel')
     <script>
         $(document).ready(function() {

@@ -36,7 +36,7 @@ class AuthController extends Controller
         dispatch(new SendVerificationEmail($user, $verificationCode));
 
         return response()->json([
-            'message' => 'Đăng ký thành công',
+            'message' => 'Registration successful',
             'user' => $user
         ], 201);
     }
@@ -47,7 +47,7 @@ class AuthController extends Controller
 
         if (!Auth::attempt($credentials)) {
             return response()->json([
-                'message' => 'Tài khoản hoặc mật khẩu không chính xác',
+                'message' => 'Invalid username or password',
             ], 401);
         }
 
@@ -56,13 +56,13 @@ class AuthController extends Controller
             Auth::logout();
             return response()->json([
                 'id' => $user->id,
-                'message' => 'Tài khoản chưa được xác minh, vui lòng vào Email để xác minh',
+                'message' => 'Account not verified, please check your email for verification',
             ], 401);
         }
 
         $token = $user->createToken('token')->plainTextToken;
         return response()->json([
-            'success' => 'Đăng nhập thành công',
+            'success' => 'Login successful',
             'user' => $user,
             'token' => $token,
             'role' => $user->getRoleNames(),
@@ -73,21 +73,21 @@ class AuthController extends Controller
         $user = User::find($id);
 
         if (!$user) {
-            return response()->json(['message' => 'Người dùng không tồn tại.'], 404);
+            return response()->json(['message' => 'User does not exist.'], 404);
         }
 
         if ($user->is_verified) {
-            return response()->json(['message' => 'Tài khoản đã được xác minh trước đó.'], 400);
+            return response()->json(['message' => 'The account has been previously verified.'], 400);
         }
 
         $verificationCode = $request->input('verification_code');
 
         if ($user->verification_code !== $verificationCode) {
-            return response()->json(['message' => 'Mã xác minh không hợp lệ.'], 400);
+            return response()->json(['message' => 'The verification code is invalid.'], 400);
         }
 
         if (!empty($user->code_expired_in) && now() > $user->code_expired_in) {
-            return response()->json(['message' => 'Mã xác minh đã hết hạn.'], 400);
+            return response()->json(['message' => 'The verification code has expired.'], 400);
         }
 
         try {
@@ -101,9 +101,9 @@ class AuthController extends Controller
             Auth::login($user);
             $token = $user->createToken('token')->plainTextToken;
 
-            return response()->json(['message' => 'Xác minh thành công.', 'token' => $token], 200);
+            return response()->json(['message' => 'Verification successful.', 'token' => $token], 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Đã xảy ra lỗi khi xác minh tài khoản.'], 500);
+            return response()->json(['message' => 'There was an error while verifying the account.'], 500);
         }
     }
 
@@ -112,11 +112,11 @@ class AuthController extends Controller
         $user = User::find($id);
 
         if (!$user) {
-            return response()->json(['message' => 'Không tìm thấy người dùng.'], 404);
+            return response()->json(['message' => 'User not found.'], 404);
         }
 
         if ($user->is_verified) {
-            return response()->json(['message' => 'Tài khoản đã được xác minh trước đó.'], 400);
+            return response()->json(['message' => 'The account has been previously verified.'], 400);
         }
 
         $verificationCode = mt_rand(100000, 999999);
@@ -128,7 +128,7 @@ class AuthController extends Controller
 
         dispatch(new SendVerificationEmail($user, $verificationCode));
 
-        return response()->json(['message' => 'Đã gửi lại email xác minh với mã xác minh mới.'], 200);
+        return response()->json(['message' => 'Resent verification email with a new verification code.'], 200);
     }
     public function logout(Request $request)
     {

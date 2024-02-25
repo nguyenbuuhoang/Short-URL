@@ -16,8 +16,11 @@ class UserListController extends Controller
     protected $shortUrlService;
     protected $dataProcessorService;
     protected $userService;
-    public function __construct(ShortUrlService $shortUrlService, DataProcessorService $dataProcessorService, UserService $userService)
-    {
+    public function __construct(
+        ShortUrlService $shortUrlService,
+        DataProcessorService $dataProcessorService,
+        UserService $userService
+    ) {
         $this->shortUrlService = $shortUrlService;
         $this->dataProcessorService = $dataProcessorService;
         $this->userService = $userService;
@@ -33,7 +36,7 @@ class UserListController extends Controller
             ->select('id', 'name', 'email', 'is_verified', 'created_at');
 
         if ($name) {
-            $query= $this->dataProcessorService->filterByName($query, $name);
+            $query = $this->dataProcessorService->filterByName($query, $name);
         }
         $query = $this->dataProcessorService->sort($query, $sort_by, $sort_order);
         if ($export === 'csv') {
@@ -49,13 +52,13 @@ class UserListController extends Controller
         $user =  $this->userService->findUser($id);
         $role = $request->input('role');
         $user->syncRoles([$role]);
-        return response()->json(['message' => 'Vai trò của người dùng đã được cập nhật thành công'], 200);
+        return response()->json(['message' => 'The users role has been successfully updated'], 200);
     }
 
     public function deleteUser($id)
     {
         $user =  $this->userService->findUser($id);
         $user->delete();
-        return response()->json(['message' => 'Người dùng đã bị xóa thành công'], 200);
+        return response()->json(['message' => 'The user has been successfully deleted'], 200);
     }
 }

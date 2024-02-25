@@ -3,7 +3,7 @@ aria-hidden="true">
 <div class="modal-dialog" role="document">
     <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="editShortModalLabel" style="color: black;">Chỉnh sửa</h5>
+            <h5 class="modal-title" id="editShortModalLabel" style="color: black;">Edit</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -16,18 +16,18 @@ aria-hidden="true">
                         style="background-color: rgb(89, 89, 92); color: white;">
                 </div>
                 <div class="form-group">
-                    <label for="newStatus" style="color: black;">Trạng thái:</label>
+                    <label for="newStatus" style="color: black;">Status:</label>
                     <select id="newStatus" class="form-control"
                         style="background-color: rgb(89, 89, 92); color: white;">
-                        <option value="active">Hoạt động</option>
-                        <option value="inactive">Không hoạt động</option>
+                        <option value="active">Activity</option>
+                        <option value="inactive">No Activity</option>
                     </select>
                 </div>
             </form>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-            <button type="button" class="btn btn-primary" id="saveShortButton">Lưu</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="saveShortButton">Save</button>
         </div>
     </div>
 </div>

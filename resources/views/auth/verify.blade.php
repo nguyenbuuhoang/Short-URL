@@ -13,14 +13,14 @@
                                 {{ session('status') }}
                             </div>
                         @endif
-                        <p>Nhập mã xác minh để hoàn tất quá trình xác minh tài khoản.</p>
+                        <p>Enter the verification code to complete the account verification process</p>
                         <div class="form-group">
-                            <label for="verification_code">Mã xác minh</label>
+                            <label for="verification_code">Verification code</label>
                             <input type="text" id="verification_code" class="form-control">
                         </div>
                         <div id="message" class="text-danger mt-3 mb-3"></div>
-                        <button id="verifyButton" class="btn btn-primary">Xác minh</button>
-                        <button id="resendVerificationButton" class="btn btn-secondary">Gửi lại mã xác minh</button>
+                        <button id="verifyButton" class="btn btn-primary">Verification</button>
+                        <button id="resendVerificationButton" class="btn btn-secondary">Resend verification code</button>
                     </div>
                 </div>
             </div>
@@ -54,7 +54,7 @@
                 const verificationCode = verificationCodeInput.value;
 
                 if (!verificationCode) {
-                    messageDiv.textContent = 'Vui lòng nhập mã xác minh.';
+                    messageDiv.textContent = 'Please enter verification code.';
                     return;
                 }
                 fetch('/api/verify/' + id, {
@@ -73,25 +73,25 @@
             });
 
             function handleResendVerificationResponse(data) {
-                if (data.message === 'Đã gửi lại email xác minh với mã xác minh mới.') {
+                if (data.message === 'Verification email sent again with new verification code.') {
                     alert(data.message);
                 } else {
-                    messageDiv.textContent = 'Lỗi: ' + data.message;
+                    messageDiv.textContent = 'Error: ' + data.message;
                 }
             }
 
             function handleVerificationResponse(data) {
-                if (data.message === 'Xác minh thành công.') {
+                if (data.message === 'Verified successfully.') {
                     setCookie('token', data.token, 1);
                     alert(data.message);
                     window.location.href = '/';
                 } else {
-                    messageDiv.textContent = 'Xác minh không thành công: ' + data.message;
+                    messageDiv.textContent = 'Verification failed: ' + data.message;
                 }
             }
 
             function handleError(error) {
-                messageDiv.textContent = 'Lỗi: ' + error;
+                messageDiv.textContent = 'Error: ' + error;
             }
             // Hàm để lưu cookie
             function setCookie(name, value, days) {

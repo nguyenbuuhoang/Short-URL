@@ -16,8 +16,10 @@ class ShortLinksController extends Controller
     protected $shortUrlService;
     protected $dataProcessorService;
 
-    public function __construct(ShortUrlService $shortUrlService, DataProcessorService $dataProcessorService)
-    {
+    public function __construct(
+        ShortUrlService $shortUrlService,
+        DataProcessorService $dataProcessorService
+    ) {
         $this->shortUrlService = $shortUrlService;
         $this->dataProcessorService = $dataProcessorService;
     }
@@ -84,13 +86,13 @@ class ShortLinksController extends Controller
             'status' => $status,
         ]);
 
-        return response()->json(['message' => 'Short URL đã được cập nhật thành công.']);
+        return response()->json(['message' => 'The short URL has been successfully updated.']);
     }
 
     public function deleteShortURL($id)
     {
         $shortUrl = $this->shortUrlService->findShortUrl($id);
         $shortUrl->delete();
-        return response()->json(['message' => 'Đã xóa short Url thành công'], 200);
+        return response()->json(['message' => 'The short URL has been successfully deleted'], 200);
     }
 }

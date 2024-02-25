@@ -28,8 +28,8 @@ class CreateShortURL extends BaseRequest
     public function messages(): array
     {
         return [
-            'url.url' => 'Vui lòng nhập đường dẫn chính xác',
-            'url.required' => 'Url không được bỏ trống',
+            'url.url' => 'Please enter the correct URL',
+            'url.required' => 'The URL must not be left blank.',
         ];
     }
 }

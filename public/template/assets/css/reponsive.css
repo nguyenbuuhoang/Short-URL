@@ -1,0 +1,155 @@
+/* Mobile*/
+@media only screen and (max-width: 768px) {
+    .logo {
+        margin-left: 10px;
+        font-size: 30px;
+    }
+
+    h2.color-text {
+        font-size: 30px;
+    }
+
+    .link-shortener {
+        width: 90%;
+    }
+
+    .fa-link {
+        display: none;
+    }
+
+    #urlInput {
+        margin-left: 10px;
+        width: 100%;
+        padding: 5px;
+    }
+
+    #shortenButton {
+        padding: 1px 20px;
+    }
+
+    /* Ẩn các cột không cần thiết trên màn hình nhỏ */
+    #link-table th:nth-child(4),
+    #link-table td:nth-child(4) {
+        display: none;
+    }
+
+    #link-table {
+        width: 100%;
+    }
+
+    #link-table th {
+        font-size: 15px;
+    }
+
+    #link-table td {
+        font-size: 15px;
+        padding: 5px;
+    }
+
+    .link {
+        margin-left: 30px;
+        padding: 5px;
+        font-size: 16px;
+        border: none;
+        border-radius: 0%;
+        background-color: transparent;
+        background: linear-gradient(to right, #ff4e50, #fc913a);
+        background-clip: text;
+        color: transparent;
+    }
+
+    header {
+        padding: 20px;
+    }
+
+    header .logo {
+        margin-left: 10px;
+    }
+
+    header .navbar {
+        flex-direction: column;
+        position: absolute;
+        top: 0px;
+        left: -100%;
+        height: 100vh;
+        background-color: #333;
+        width: 60%;
+        text-align: left;
+        transition: left 0.3s ease;
+    }
+
+    header .navbar.show {
+        left: 0;
+    }
+
+    header .navbar ul {
+        flex-direction: column;
+        margin-top: 30px;
+    }
+
+    header .navbar ul li {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    header .navbar ul li a {
+        font-size: 18px;
+        width: 100%;
+        text-align: left;
+    }
+
+    header .navbar ul li ul {
+        position: relative;
+        width: 100%;
+    }
+
+    header .navbar ul li ul li {
+        margin-left: 10px;
+    }
+    header .navbar ul li ul li a{
+        font-size: 15px;
+        color: white;
+    }
+
+    header .navbar ul li ul li ul {
+        width: 100%;
+        left: 0;
+    }
+
+    .icon {
+        display: block;
+        font-size: 30px;
+        color: #ff4e50;
+    }
+
+    .close-btn {
+        display: none;
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        cursor: pointer;
+        border-radius: 100%;
+        z-index: 1100;
+    }
+}
+
+/* Tablet */
+@media only screen and (min-width: 769px) and (max-width: 1023px) {
+    h2.color-text {
+        font-size: 30px;
+    }
+
+    header .logo {
+        margin-left: 10px;
+        font-size: 25px;
+    }
+
+    .link {
+        font-size: 15px;
+        padding-left: 0px;
+    }
+    #link-table {
+        width: 90%;
+    }
+}

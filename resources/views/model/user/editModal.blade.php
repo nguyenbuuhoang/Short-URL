@@ -2,31 +2,31 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Chỉnh sửa url</h5>
+                <h5 class="modal-title">Edit URL</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <label for="newShortCode">Nhập URL:</label>
+                <label for="newShortCode">Enter URL:</label>
                 <div class="input-group">
                     <span class="input-group-text" id="baseURL"></span>
                     <input type="text" id="newShortCode" class="form-control">
                 </div>
-                <label for="newStatus">Trạng thái:</label>
+                <label for="newStatus">Status:</label>
                 <select id="newStatus" class="form-control">
-                    <option value="active">Hoạt động</option>
-                    <option value="inactive">Không hoạt động</option>
+                    <option value="active">Activity</option>
+                    <option value="inactive">No Activity</option>
                 </select>
                 <div id="passwordShortField" style="display: none;">
-                    <label for="passwordShort">Mật khẩu:</label>
+                    <label for="passwordShort">Password:</label>
                     <input type="password" id="passwordShort" class="form-control">
                 </div>
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                <button type="button" class="btn btn-primary" id="saveShortCode">Lưu</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveShortCode">Save</button>
             </div>
         </div>
     </div>

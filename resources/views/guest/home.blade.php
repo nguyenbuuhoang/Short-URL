@@ -1,41 +1,38 @@
 @extends('guest.layouts.app')
 @section('title', 'Short Link')
 @section('content')
-    <div class="container">
-        <div class="row">
-            <div class="col-12 text-center mt-3">
-                <h2>URL Shortener</h2>
-                <p>Đây là giao diện trang Short-Url Link cơ bản, để có các chức năng cao cấp hơn, vui lòng đăng nhập và xác
-                    thực</p>
-                <p>Lưu ý: Link URL test chỉ có thời hạn là 30 phút do người dùng chưa đăng nhập</p>
-                <p> Giới hạn chỉ hiển thị 3 Url gần nhất </p>
-                <div class="input-group mb-4" style="max-width: 600px; margin: 0 auto;">
-                    <input type="text" id="urlInput" class="form-control" name="urlInput"
-                        placeholder="Enter a link to shorten it">
-                    <button id="shortenButton" class="btn btn-primary">Shorten URL</button>
-                </div>
-            </div>
+    <div class="container-fluid">
+        <div class="text-center">
+            <h2 class="color-text">Shorten Your Long Link ^_^</h2>
+            <br>
+            <p class="color-text">Linkly is an efficient and easy-to-use URL shortener.</p>
         </div>
-        <div class="alert alert-danger" id="errorContainer" style="display: none;"></div>
-        <div class="row">
-            <div class="col-12">
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Link Short</th>
-                                <th>Short URL</th>
-                                <th>Thời hạn</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody id="shortUrl">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <div class="link-shortener">
+            <i class="fa-solid fa-link"
+                style="font-size: 20px; color: #ffffff; padding: 10px; margin-left:20px; margin-right: -100px;"></i>
+            <input type="text" placeholder="Enter the link here" id="urlInput">
+            <button id="shortenButton"><i class="fa-solid fa-arrow-right"></i></button>
         </div>
+        <div id="errorContainer" class="alert alert-danger alert-dismissible fade show"></div>
+        <br>
+        <div class="text-center">
+            <p class="color-text">You can create up to 5 links for free with no account, and they will expire after 30 minutes.</p>
+                <p class="color-text">Advanced features (QR code generation, filtering, sorting,...) will be activated upon account registration. <a href="{{ route('register') }}">Register now</a></p>
+        </div>
+        <table id="link-table">
+            <thead>
+                <tr>
+                    <th>Short Link</th>
+                    <th>Original Link</th>
+                    <th>Remaining Time</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="shortUrl">
+            </tbody>
+        </table>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
         $(document).ready(function() {
             const urlInput = $('#urlInput');
@@ -46,107 +43,78 @@
 
             function removeExpiredURLs() {
                 const now = new Date();
-                const updatedSavedUrls = savedUrls.filter(data => {
-                    const expirationTime = new Date(data.expired_at);
-                    return expirationTime > now;
-                });
-
-                if (updatedSavedUrls.length < savedUrls.length) {
-                    savedUrls = updatedSavedUrls;
+                savedUrls = savedUrls.filter(data => new Date(data.expired_at) > now);
+                if (savedUrls.length < JSON.parse(localStorage.getItem('shortenedUrls')).length) {
                     localStorage.setItem('shortenedUrls', JSON.stringify(savedUrls));
                     location.reload();
                 }
-            }
-
-            // Populate the table with saved URLs
-            savedUrls.forEach(data => {
-                displayShortURL(data);
-            });
-
-            // Check and remove expired URLs
-            removeExpiredURLs();
-
-            shortenButton.on('click', shortenURL);
-
-            function shortenURL() {
-                const url = urlInput.val();
-                const csrfToken = $('meta[name="csrf-token"]').attr('content');
-                $.ajax({
-                    url: '/api/guest/create-short-url',
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken,
-                    },
-                    data: JSON.stringify({
-                        url
-                    }),
-                    contentType: 'application/json',
-                    success: function(data) {
-                        errorContainer.css('display', 'none');
-                        displayShortURL(data);
-                        savedUrls.push(data);
-                        if (savedUrls.length > 3) {
-                            savedUrls.shift();
-                        }
-                        localStorage.setItem('shortenedUrls', JSON.stringify(savedUrls));
-                        removeExpiredURLs();
-                    },
-                    error: function(xhr) {
-                        const errorMessages = xhr.responseJSON.errors;
-                        let errorMessage = '';
-                        for (let key in errorMessages) {
-                            errorMessage += errorMessages[key][0] + ' ';
-                        }
-                        errorContainer.text(errorMessage);
-                        errorContainer.css('display', 'block');
-                    }
-                });
             }
 
             function displayShortURL(data) {
                 const displayedUrl = data.url.length > 30 ? data.url.substring(0, 30) + '...' : data.url;
                 const newRow = createShortURLRow(data.short_url_link, displayedUrl, data.expired_at);
                 shortUrlDisplay.append(newRow);
-
-                const copyButton = newRow.find('.copyButton');
-                copyButton.on('click', function() {
-                    copyToClipboard(data.short_url_link);
-                });
+                newRow.find('.copyButton').on('click', () => copyToClipboard(data.short_url_link));
             }
 
             function createShortURLRow(shortURL, displayedURL, expiredAt) {
                 const now = new Date();
                 const expirationTime = new Date(expiredAt);
                 const timeDifference = expirationTime - now;
+                const timeRemaining = timeDifference > 0 ? Math.floor(timeDifference / (1000 * 60)) + ' minutes' :
+                    'Expired';
 
-                let timeRemaining = '';
-                if (timeDifference > 0) {
-                    const minutesRemaining = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
-                    if (minutesRemaining > 0) {
-                        timeRemaining = `${minutesRemaining} phút`;
-                    }
-                } else {
-                    timeRemaining = 'Hết hạn';
+                const newRow = $('<tr>').html(`
+            <td title="${shortURL}">${shortURL}</td>
+            <td>${displayedURL}</td>
+            <td>${timeRemaining}</td>
+            <td><button class="copyButton">Copy</button></td>`);
+                return newRow;
+            }
+
+            async function shortenURL() {
+                const url = urlInput.val();
+                const csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+                if (savedUrls.length >= 5) {
+                    alert('You have reached the maximum limit of saved URLs.');
+                    return;
                 }
 
-                const newRow = $('<tr>');
-                newRow.html(`
-                    <td title="${shortURL}">${displayedURL}</td>
-                    <td>${shortURL}</td>
-                    <td>${timeRemaining}</td>
-                    <td><button class="copyButton">Copy</button></td>`);
-                return newRow;
+                try {
+                    const response = await $.ajax({
+                        url: '/api/guest/create-short-url',
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        data: JSON.stringify({
+                            url
+                        }),
+                        contentType: 'application/json'
+                    });
+                    errorContainer.css('display', 'none');
+                    displayShortURL(response);
+                    savedUrls.push(response);
+                    localStorage.setItem('shortenedUrls', JSON.stringify(savedUrls));
+                    removeExpiredURLs();
+                } catch (error) {
+                    const errorMessage = error.responseJSON ? Object.values(error.responseJSON.errors).flat()
+                        .join(' ') : 'An error occurred.';
+                    errorContainer.text(errorMessage);
+                    errorContainer.css('display', 'block');
+                    setTimeout(() => errorContainer.css('display', 'none'), 2000);
+                }
             }
 
             function copyToClipboard(text) {
                 navigator.clipboard.writeText(text)
-                    .then(() => {
-                        alert('Link đã được sao chép: ' + text);
-                    })
-                    .catch(error => {
-                        console.error('Sao chép thất bại: ' + error);
-                    });
+                    .then(() => alert('Link copied: ' + text))
+                    .catch(error => console.error('Copy failed: ' + error));
             }
+            savedUrls.forEach(data => displayShortURL(data));
+            removeExpiredURLs();
+            shortenButton.on('click', shortenURL);
         });
     </script>
 @endsection

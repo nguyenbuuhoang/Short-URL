@@ -41,7 +41,7 @@ class ShortUrlController extends Controller
         $shortUrl = $this->shortUrlService->getByShortCode($shortCode);
 
         if (!$shortUrl) {
-            return response()->json(['error' => 'Short URL không tìm thấy'], 404);
+            return response()->json(['error' => 'Short URL not found'], 404);
         }
         if ($shortUrl->expired_at && now() > $shortUrl->expired_at) {
             return view('errors.expired_code');
@@ -81,7 +81,7 @@ class ShortUrlController extends Controller
         $shortUrl = $this->shortUrlService->findShortUrl($id);
 
         if (!$this->shortUrlService->hasPermission($shortUrl)) {
-            return response()->json(['error' => 'Không có quyền chỉnh sửa'], 403);
+            return response()->json(['error' => 'No editing rights'], 403);
         }
 
         $shortCode = $request->input('short_code');
@@ -96,12 +96,12 @@ class ShortUrlController extends Controller
     {
         $shortUrl = $this->shortUrlService->findShortUrl($id);
         if (!$shortUrl) {
-            return response()->json(['error' => 'URL không tìm thấy'], 404);
+            return response()->json(['error' => 'URL not found'], 404);
         }
         if (!$this->shortUrlService->hasPermission($shortUrl)) {
-            return response()->json(['error' => 'Không có quyền chỉnh sửa'], 403);
+            return response()->json(['error' => 'No editing privileges'], 403);
         }
         $shortUrl->delete();
-        return response()->json(['message' => 'URL đã được xóa thành công']);
+        return response()->json(['message' => 'The URL has been successfully deleted']);
     }
 }

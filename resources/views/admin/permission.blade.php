@@ -3,15 +3,15 @@
 @section('content')
     <div class="content-wrapper">
         <div class="container-fluid">
-            <div class="card-header">Phân quyền link</div>
+            <div class="card-header">Link Permissions</div>
             <form>
                 <table class="table">
                     <thead>
                         <tr>
                             <th></th>
-                            <th>Add link</th>
-                            <th>Edit link</th>
-                            <th>Delete link</th>
+                            <th>Add Link</th>
+                            <th>Edit Link</th>
+                            <th>Delete Link</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -29,7 +29,7 @@
                         </tr>
                     </tbody>
                 </table>
-                <button type="submit" class="btn btn-primary">Lưu</button>
+                <button type="submit" class="btn btn-primary">Save</button>
             </form>
         </div>
     </div>

@@ -25,8 +25,7 @@
                     <h1 style="font-size:20px;font-weight:bold;line-height:1.3;margin:0 0 15px 0">Verify your identity
                     </h1>
                     <p style="margin:0 0 15px 0;padding:0 0 0 0">Hi {{ $user->name }},</p>
-                    <p style="margin:0 0 15px 0;padding:0 0 0 0">Bạn đã đăng ký tài khoản thành công, hãy nhập mã xác
-                        thực vào link dưới để xác nhận</p>
+                    <p style="margin:0 0 15px 0;padding:0 0 0 0">You have successfully registered, please enter the verification code in the link below to confirm</p>
                 </td>
             </tr>
             <tr>
@@ -35,7 +34,7 @@
                     <div style="font-weight:bold;padding-bottom:15px">Verification code</div>
                     <div style="color:#000;font-size:36px;font-weight:bold;padding-bottom:15px">{{ $verificationCode }}
                     </div>
-                    <div style="color:#444;font-size:10px">(Mã sẽ hết hạn sau 5 phút)</div>
+                    <div style="color:#444;font-size:10px">(The code will expire after 5 minutes)</div>
                 </td>
             </tr>
             <tr>
@@ -45,8 +44,7 @@
                         <a href="{{ $verificationLink }}" target="_blank"
                             data-saferedirecturl="https://www.google.com/url?q=https://aws.amazon.com/contact-us/&amp;source=gmail&amp;ust=1697968409975000&amp;usg=AOvVaw3D1QoIsRcfS8H8m70GLPpT">
                             <button
-                                style="background-color: yellow; color: rgb(0, 4, 7); padding: 10px 20px; border: 2px solid black; border-radius: 5px; cursor: pointer;">Xác
-                                nhận ngay</button>
+                                style="background-color: yellow; color: rgb(0, 4, 7); padding: 10px 20px; border: 2px solid black; border-radius: 5px; cursor: pointer;">Confirm now</button>
                         </a>
                     </p>
             </tr>

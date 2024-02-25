@@ -3,7 +3,7 @@ aria-hidden="true">
 <div class="modal-dialog" role="document">
     <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="editRoleModalLabel" style="color: black;">Chỉnh sửa vai trò</h5>
+            <h5 class="modal-title" id="editRoleModalLabel" style="color: black;">Edit role</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -22,8 +22,8 @@ aria-hidden="true">
             </form>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-            <button type="button" class="btn btn-primary" id="saveRoleButton">Lưu</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="saveRoleButton">Save</button>
         </div>
     </div>
 </div>
