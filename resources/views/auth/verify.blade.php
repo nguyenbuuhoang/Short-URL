@@ -73,7 +73,7 @@
             });
 
             function handleResendVerificationResponse(data) {
-                if (data.message === 'Verification email sent again with new verification code.') {
+                if (data.message === 'Resent verification email with a new verification code.') {
                     alert(data.message);
                 } else {
                     messageDiv.textContent = 'Error: ' + data.message;
@@ -81,7 +81,7 @@
             }
 
             function handleVerificationResponse(data) {
-                if (data.message === 'Verified successfully.') {
+                if (data.message === 'Verification successful.') {
                     setCookie('token', data.token, 1);
                     alert(data.message);
                     window.location.href = '/';

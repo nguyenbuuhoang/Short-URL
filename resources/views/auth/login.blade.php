@@ -80,7 +80,7 @@
                     window.location.href = '/';
                 }
             }
-            if (data.message === 'Account has not been verified, please go to Email to verify') {
+            if (data.message === 'Account not verified, please check your email for verification') {
                 const confirmation = confirm(data.message + ' Click OK to verify the account.');
 
                 if (confirmation) {
