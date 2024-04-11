@@ -16,8 +16,10 @@
         <div id="errorContainer" class="alert alert-danger alert-dismissible fade show"></div>
         <br>
         <div class="text-center">
-            <p class="color-text">You can create up to 5 links for free with no account, and they will expire after 30 minutes.</p>
-                <p class="color-text">Advanced features (QR code generation, filtering, sorting,...) will be activated upon account registration. <a href="{{ route('register') }}">Register now</a></p>
+            <p class="color-text">You can create up to 5 links for free with no account, and they will expire after 30
+                minutes.</p>
+            <p class="color-text">Advanced features (QR code generation, filtering, sorting,...) will be activated upon
+                account registration. <a href="{{ route('register') }}">Register now</a></p>
         </div>
         <table id="link-table">
             <thead>
@@ -43,10 +45,14 @@
 
             function removeExpiredURLs() {
                 const now = new Date();
-                savedUrls = savedUrls.filter(data => new Date(data.expired_at) > now);
-                if (savedUrls.length < JSON.parse(localStorage.getItem('shortenedUrls')).length) {
-                    localStorage.setItem('shortenedUrls', JSON.stringify(savedUrls));
-                    location.reload();
+                const storedUrls = JSON.parse(localStorage.getItem('shortenedUrls'));
+
+                if (storedUrls && storedUrls.length > 0) {
+                    savedUrls = savedUrls.filter(data => new Date(data.expired_at) > now);
+                    if (savedUrls.length < storedUrls.length) {
+                        localStorage.setItem('shortenedUrls', JSON.stringify(savedUrls));
+                        location.reload();
+                    }
                 }
             }
 
